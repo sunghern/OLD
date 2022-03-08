@@ -446,18 +446,13 @@ def train(train_loader, model, criterion, soft_criterion, optimizer, epoch, args
                     #loss1 = cross_entropy_loss_with_soft_target(output, soft_target.detach())
                     loss1 = torch.mean(soft_criterion(output, soft_target.detach()))
 
-                loss2 = 0
-                for m in model.modules():
-                    if hasattr(m, 'loss') and m.loss is not None:
-                        loss2 += m.loss
-
-                loss = loss1 + 1e-8 * loss2
-
-                # measure accuracy and record loss
-                acc1, acc5 = accuracy(output, target, topk=(1, 5))
-                losses.update(loss.item(), images.size(0))
-                top1.update(acc1[0], images.size(0))
-                top5.update(acc5[0], images.size(0))
+                if pruning_rate == 0.0:
+                    loss1 = criterion(output, target)
+                    # measure accuracy and record loss
+                    acc1, acc5 = accuracy(output, target, topk=(1, 5))
+                    losses.update(loss.item(), images.size(0))
+                    top1.update(acc1[0], images.size(0))
+                    top5.update(acc5[0], images.size(0))
                 else:
                     #loss1 = torch.mean(output, soft_target)
                     #soft_target = torch.argmax(soft_target, 1) 
