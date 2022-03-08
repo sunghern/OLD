@@ -83,8 +83,12 @@ class BasicBlock(nn.Module):
                  downsample: Optional[Callable] = None,
                  groups: int = 1,
                  base_width: int = 64,
+<<<<<<< HEAD
                  dilation: int = 1,
                  pruning: Optional[Callable] = None) -> None:
+=======
+                 dilation: int = 1) -> None:
+>>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
         super().__init__()
         if groups != 1 or base_width != 64:
             raise ValueError('BasicBlock only supports groups=1 and base_width=64')
@@ -94,14 +98,21 @@ class BasicBlock(nn.Module):
         self.conv2 = conv3x3(planes, planes, normalization='bn')
         self.downsample = downsample
         self.stride = stride
+<<<<<<< HEAD
         self.pruning = pruning
+=======
+>>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
         self.channel_pruning = ChannelPruning(inplanes, planes)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         global partition_point
         identity = x
         out = self.conv1(x)
+<<<<<<< HEAD
         #zero_value = torch.nonzero(out)
+=======
+        zero_value = torch.nonzero(out)
+>>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
 
         #if partition_point == True:
             #out = out * self.channel_pruning(out)
@@ -119,7 +130,11 @@ class BasicBlock(nn.Module):
             #print("percentage 1")
             #print(zero_dim/total_dim)
                     
+<<<<<<< HEAD
         #out = self.conv2(out)
+=======
+        out = self.conv2(out)
+>>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
         #zero_value_t = torch.nonzero(out)
 
         #if partition_point == True:
@@ -139,6 +154,7 @@ class BasicBlock(nn.Module):
             #print("percentage 2")
             #print(zero_dim/total_dim)
             
+<<<<<<< HEAD
         #if self.downsample is not None:
             #identity = self.downsample(x)
 
@@ -167,6 +183,17 @@ class BasicBlock(nn.Module):
             out = F.relu(out)
 
             #print("not pruning")
+=======
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = F.relu(out)
+        #return out
+        if partition_point == True:
+            return out * self.channel_pruning(out)
+        else:
+>>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
             return out
 
 class Bottleneck(nn.Module):
@@ -256,6 +283,7 @@ class ResNet(nn.Module):
                             dilation=previous_dilation))
         self.inplanes = planes * block.expansion
         for _ in range(1, blocks):
+<<<<<<< HEAD
             if _ == blocks-1:
                 layers.append(block(self.inplanes,
                                     planes,
@@ -270,6 +298,13 @@ class ResNet(nn.Module):
                                     base_width=self.base_width,
                                     dilation=self.dilation))    
 
+=======
+            layers.append(block(self.inplanes,
+                                planes,
+                                groups=self.groups,
+                                base_width=self.base_width,
+                                dilation=self.dilation))
+>>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
         return nn.Sequential(*layers)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
