@@ -163,11 +163,8 @@ def main():
     print("learning rate :", args.lr)
     set_random_seed(args.seed)
 
-<<<<<<< HEAD
     wandb.init(project="offloading", entity="sunghern")
-=======
     wandb.init(project="test", entity="sunghern")
->>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
     wandb.config.update(args)
     wandb.config = {
         "learning_rate": args.lr,
@@ -224,7 +221,6 @@ def main():
                     m.rate = pruning_rate
             if args.post_bn:
                 bn_calibration(train_loader, model, criterion, args)
-<<<<<<< HEAD
             #for m in model.modules():
                 #if hasattr(m, 'rate'):
                     #m.count_channel[:] = 0.0
@@ -237,7 +233,6 @@ def main():
                 #if hasattr(m, 'rate'):
                     #count_channel_dict[pruning_rate].append(np.array(m.count_channel))
                     #count_channel_dict2[pruning_rate].append(m.count_channel.mean())
-=======
             for m in model.modules():
                 if hasattr(m, 'rate'):
                     m.count_channel[:] = 0.0
@@ -250,7 +245,6 @@ def main():
                 if hasattr(m, 'rate'):
                     count_channel_dict[pruning_rate].append(np.array(m.count_channel))
                     count_channel_dict2[pruning_rate].append(m.count_channel.mean())
->>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
 
         #idx = count_channel_dict[0.4][-1].argsort()
         '''
@@ -405,12 +399,9 @@ def train(train_loader, model, criterion, soft_criterion, optimizer, epoch, args
         if torch.cuda.is_available():
             target = target.cuda(args.gpu, non_blocking=True)
 
-<<<<<<< HEAD
         #loss_function = torch.nn.CrossEntropyLoss()
         #soft_loss_function = CrossEntropyLossSoft()
 
-=======
->>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
         # compute output
         optimizer.zero_grad()
         if args.joint:
@@ -420,17 +411,13 @@ def train(train_loader, model, criterion, soft_criterion, optimizer, epoch, args
                 for m in model.modules():
                     if hasattr(m, 'rate'):
                         m.rate = pruning_rate
-<<<<<<< HEAD
                 '''
-=======
 
->>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
                 if pruning_rate == 0.0:
                     soft_logits = model(images)
                     soft_target = torch.nn.functional.softmax(soft_logits, dim=1)
                 else: 
                     output = model(images)
-<<<<<<< HEAD
                 '''
                 output = model(images)
 
@@ -441,20 +428,17 @@ def train(train_loader, model, criterion, soft_criterion, optimizer, epoch, args
                     soft_target = torch.nn.functional.softmax(output, dim=1)
                     
                     '''
-=======
 
                 if pruning_rate == 0.0:
                     #loss = criterion(output, target)
                     loss = criterion(soft_logits, target.long())
                     #soft_target = torch.nn.functional.softmax(output, dim=1)
 
->>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
                     # measure accuracy and record loss
                     acc1, acc5 = accuracy(soft_logits, target, topk=(1, 5))
                     losses.update(loss.item(), images.size(0))
                     top1.update(acc1[0], images.size(0))
                     top5.update(acc5[0], images.size(0))
-<<<<<<< HEAD
                     '''
                 else:
                     #loss1 = torch.mean(output, soft_target)
@@ -474,7 +458,6 @@ def train(train_loader, model, criterion, soft_criterion, optimizer, epoch, args
                 losses.update(loss.item(), images.size(0))
                 top1.update(acc1[0], images.size(0))
                 top5.update(acc5[0], images.size(0))
-=======
                 else:
                     #loss1 = torch.mean(output, soft_target)
                     #soft_target = torch.argmax(soft_target, 1) 
@@ -490,7 +473,6 @@ def train(train_loader, model, criterion, soft_criterion, optimizer, epoch, args
                     losses.update(loss.item(), images.size(0))
                     top1.update(acc1[0], images.size(0))
                     top5.update(acc5[0], images.size(0))
->>>>>>> b0be26b4076dd0e840924d1ea355dbbee0d45181
 
                 loss.backward()
         else:
